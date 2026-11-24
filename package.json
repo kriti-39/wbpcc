@@ -9,7 +9,10 @@
     "emulators": "firebase emulators:start --project demo-wbpcc",
     "seed": "esbuild scripts/seed.mjs --bundle --platform=node --format=esm --packages=external --log-level=warning --outfile=.cache/seed.mjs && node .cache/seed.mjs --local",
     "test:rules": "firebase emulators:exec --only firestore --project demo-wbpcc \"node --test tests/rules.test.mjs\"",
-    "check:seed": "firebase emulators:exec --only auth,firestore --project demo-wbpcc \"npm run seed\""
+    "check:seed": "firebase emulators:exec --only auth,firestore --project demo-wbpcc \"npm run seed\"",
+    "deploy:rules": "firebase deploy --only firestore:rules,firestore:indexes",
+    "live:content": "esbuild scripts/live.mjs --bundle --platform=node --format=esm --packages=external --log-level=warning --outfile=.cache/live.mjs && node .cache/live.mjs content",
+    "live:admin": "esbuild scripts/live.mjs --bundle --platform=node --format=esm --packages=external --log-level=warning --outfile=.cache/live.mjs && node .cache/live.mjs admin"
   },
   "dependencies": {
     "firebase": "^13.4.0",
