@@ -1,0 +1,28 @@
+{
+  "name": "wbpcc",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 5192",
+    "build": "next build",
+    "start": "next start -p 5192",
+    "emulators": "firebase emulators:start --project demo-wbpcc",
+    "seed": "esbuild scripts/seed.mjs --bundle --platform=node --format=esm --packages=external --log-level=warning --outfile=.cache/seed.mjs && node .cache/seed.mjs --local",
+    "test:rules": "firebase emulators:exec --only firestore --project demo-wbpcc \"node --test tests/rules.test.mjs\"",
+    "check:seed": "firebase emulators:exec --only auth,firestore --project demo-wbpcc \"npm run seed\""
+  },
+  "dependencies": {
+    "firebase": "^13.4.0",
+    "firebase-admin": "^14.5.1",
+    "leaflet": "^1.9.4",
+    "next": "^16.4.6",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-leaflet": "^5.0.0"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^6.0.0",
+    "esbuild": "^0.28.2",
+    "firebase-tools": "^13.35.1"
+  }
+}

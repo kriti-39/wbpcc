@@ -1,0 +1,40 @@
+import { getDictionary, t, fill, formatNumber } from "@/i18n/config";
+import { districts, findGroup } from "@/data/placeholder";
+import { demoMember } from "@/data/portal";
+import PortalNav from "@/components/PortalNav";
+
+// Member portal shell: member card on top, menu on the left (top on phones).
+// Phase 2: only reachable with a signed-in member session.
+export default async function PortalLayout({ children, params }) {
+  const { lang } = await params;
+  const d = getDictionary(lang);
+  const p = d.portal;
+  const g = findGroup(demoMember.group);
+  const pct = Math.round((demoMember.day / 60) * 100);
+
+  return (
+    <div className="portal">
+      <section className="portal-hero">
+        <div className="wrap">
+          <p className="demo-note dark">🧪 {d.auth.demo}</p>
+          <div className="portal-id">
+            <div>
+              <p className="eyebrow" style={{ color: "var(--yellow)" }}>{p.title}</p>
+              <h1>{p.hello}</h1>
+              <p className="id-line"><code>{demoMember.id}</code> · {t(districts[demoMember.district], lang)} · {g.icon} {t(g.name, lang)}</p>
+            </div>
+            <div className="tier">
+              <small>{fill(p.tier, { n: formatNumber(demoMember.day, lang) })}</small>
+              <div className="progress"><span style={{ width: `${pct}%` }} /></div>
+              <small>🔒 {p.private}</small>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div className="wrap portal-body">
+        <PortalNav lang={lang} n={{ dashboard: p.nav.dashboard, resources: d.resources.title, appointment: d.appointment.title, feedback: d.contactForm.types.feedback, profile: p.nav.profile }} signout={d.auth.signout} />
+        <div className="portal-main">{children}</div>
+      </div>
+    </div>
+  );
+}

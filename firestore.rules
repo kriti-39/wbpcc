@@ -1,0 +1,150 @@
+rules_version = '2';
+
+// WBPCC — who can read and write what.
+//
+// 4 access levels (set as a "role" custom claim on the login, by an Admin via the console):
+//   Visitor      not signed in. Reads published content. Can send forms, sign petitions,
+//                apply to join and ask for an appointment. Never sees any member list.
+//   member       + the Members area (resources, own profile).
+//   contributor  + creates articles / campaigns / petitions as SUBMISSIONS. A submission is
+//                visible only to its author and to Admins until an Admin accepts it.
+//   admin        everything: publishes, edits every page, manages people & logins,
+//                and is the ONLY role that can see members, applications and form inboxes.
+//
+// Rules are a wall, not a filter: anything not allowed below is refused.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- helpers ----------
+    function signedIn() { return request.auth != null; }
+    function role() { return signedIn() ? request.auth.token.get('role', '') : ''; }
+    function isAdmin() { return role() == 'admin'; }
+    function isContributor() { return role() == 'contributor'; }
+    function isMember() { return role() in ['member', 'contributor', 'admin']; }
+    function isStaff() { return role() in ['contributor', 'admin']; }
+
+    function isPublished() { return resource.data.get('status', '') == 'published'; }
+
+    function str(v, max) { return v is string && v.size() > 0 && v.size() <= max; }
+    function optStr(m, k, max) { return !(k in m) || (m[k] is string && m[k].size() <= max); }
+    function stamped(m) { return m.createdAt == request.time; }
+
+    // ---------- public website content ----------
+    // Published items are public. Only Admins write (publishing = live).
+    // Admins can also keep unpublished drafts here (status "draft" / "hidden").
+    function publicCol(col) {
+      return col in ['pages', 'leaders', 'districtPresidents', 'groups', 'events',
+                     'posts', 'campaigns', 'petitions', 'inspiration', 'offices'];
+    }
+    match /{col}/{id} {
+      allow read: if publicCol(col) && (isPublished() || isAdmin());
+      allow write: if publicCol(col) && isAdmin();
+    }
+
+    // ---------- members area ----------
+    match /resources/{id} {
+      allow read: if isMember();
+      allow write: if isAdmin();
+    }
+
+    // A member's own private record. Members never see each other.
+    match /members/{uid} {
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin()
+        || (signedIn() && request.auth.uid == uid
+            && request.resource.data.diff(resource.data).affectedKeys()
+                 .hasOnly(['language', 'notify', 'district', 'updatedAt']));
+    }
+
+    // ---------- contributor submissions (review queue) ----------
+    match /submissions/{id} {
+      function mine() { return signedIn() && resource.data.authorUid == request.auth.uid; }
+      function valid(d) {
+        return d.kind in ['post', 'campaign', 'petition', 'event']
+          && d.authorUid == request.auth.uid
+          && d.status in ['draft', 'pending']
+          && d.title is map;
+      }
+      allow read: if isAdmin() || (isContributor() && mine());
+      allow create: if isStaff() && valid(request.resource.data) && stamped(request.resource.data);
+      // Authors may edit their own until it is accepted; they can never accept it themselves.
+      allow update: if isAdmin()
+        || (isContributor() && mine()
+            && resource.data.status in ['draft', 'pending', 'changes']
+            && valid(request.resource.data)
+            && request.resource.data.createdAt == resource.data.createdAt
+            && !request.resource.data.diff(resource.data).affectedKeys()
+                  .hasAny(['reviewedBy', 'reviewedAt', 'reviewNote', 'publishedId']));
+      allow delete: if isAdmin() || (isContributor() && mine() && resource.data.status == 'draft');
+    }
+
+    // ---------- public forms: anyone can SEND, only Admins can READ ----------
+    match /inbox/{id} {
+      allow create: if stamped(request.resource.data)
+        && request.resource.data.keys().hasOnly(['type', 'email', 'message', 'name', 'phone', 'lang', 'status', 'createdAt'])
+        && request.resource.data.type in ['feedback', 'suggestion', 'grievance', 'help', 'volunteer', 'petition', 'media', 'other']
+        && str(request.resource.data.email, 200)
+        && str(request.resource.data.message, 5000)
+        && optStr(request.resource.data, 'name', 120)
+        && optStr(request.resource.data, 'phone', 20)
+        && request.resource.data.status == 'new';
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /appointments/{id} {
+      allow create: if stamped(request.resource.data)
+        && str(request.resource.data.name, 120)
+        && str(request.resource.data.phone, 20)
+        && str(request.resource.data.reason, 3000)
+        && request.resource.data.status == 'new'
+        && request.resource.data.size() <= 20;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Join form. No Voter ID / Aadhaar is ever stored — the allowed fields are listed.
+    match /applications/{id} {
+      allow create: if stamped(request.resource.data)
+        && request.resource.data.keys().hasOnly(['name', 'mobile', 'email', 'gender', 'dob', 'district',
+              'assembly', 'address', 'pin', 'occupation', 'lang', 'declarations', 'status',
+              'fee', 'createdAt'])
+        && str(request.resource.data.name, 120)
+        && str(request.resource.data.mobile, 15)
+        && str(request.resource.data.district, 80)
+        && request.resource.data.declarations == true
+        && request.resource.data.status == 'pending_payment'
+        && request.resource.data.fee == 5;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Petition signatures: anyone signs; names/addresses are seen only by Admins.
+    match /petitions/{pid}/signatures/{sid} {
+      allow create: if stamped(request.resource.data)
+        && request.resource.data.keys().hasOnly(['name', 'district', 'phone', 'address', 'forGovt', 'lang', 'createdAt'])
+        && str(request.resource.data.name, 120)
+        && str(request.resource.data.district, 80)
+        && optStr(request.resource.data, 'address', 400)
+        && optStr(request.resource.data, 'phone', 20);
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ---------- team & logs ----------
+    match /staff/{uid} {
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow write: if isAdmin();
+    }
+
+    // Change log: staff add entries about their own actions; nobody edits or deletes.
+    match /audit/{id} {
+      allow create: if isStaff() && request.resource.data.actorUid == request.auth.uid
+        && stamped(request.resource.data);
+      allow read: if isAdmin();
+      allow update, delete: if false;
+    }
+
+    match /settings/{id} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>WBPCC Website Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wdth,wght@62.5..100,400..900&family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@500;700&family=Noto+Sans+Devanagari:wght@500;700&family=Noto+Serif+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f8f6f0; --cream2: #f1eee6; --navy: #15223f; --navy2: #22325a; --sky: #2aa7e1; --skysoft: #e4f3fb;
+    --yellow: #ffd966; --saffron: #f47320; --green: #138741; --arc: #ebebef; --muted: #5b6478; --line: #e2ded3; --red: #c8102e;
+    --head: "Noto Sans Display", "Noto Sans Bengali", "Noto Sans Devanagari", sans-serif;
+    --body: "Noto Sans", "Noto Sans Bengali", "Noto Sans Devanagari", sans-serif;
+  }
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: var(--body); color: var(--navy); font-size: 9.8pt; line-height: 1.45; background: #ccc; }
+  .page { position: relative; width: 210mm; height: 297mm; overflow: hidden; background: var(--cream); padding: 15mm 15mm 19mm; page-break-after: always; break-after: page; margin: 0 auto; }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+  .page::before { content: ""; position: absolute; right: -70mm; top: -50mm; width: 150mm; height: 150mm; border-radius: 50%; background: var(--arc); z-index: 0; }
+  .page > * { position: relative; z-index: 1; }
+  .foot { position: absolute; left: 16mm; right: 16mm; bottom: 9mm; display: flex; justify-content: space-between; font-size: 8pt; color: var(--muted); border-top: 1px solid var(--line); padding-top: 3mm; }
+  .tri { display: flex; height: 3px; width: 60mm; margin: 2.5mm 0 4.5mm; }
+  .tri i { flex: 1; } .tri i:nth-child(1) { background: var(--saffron); } .tri i:nth-child(2) { background: #fff; } .tri i:nth-child(3) { background: var(--green); }
+  .eyebrow { font-family: var(--head); font-stretch: 75%; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--sky); font-size: 9pt; margin: 0; }
+  h1 { font-family: var(--head); font-stretch: 62.5%; font-weight: 800; text-transform: uppercase; font-size: 31pt; line-height: .95; margin: 1mm 0 0; }
+  h2 { font-family: var(--head); font-stretch: 70%; font-weight: 800; text-transform: uppercase; font-size: 14pt; margin: 4.5mm 0 1.8mm; }
+  h3 { font-size: 11pt; margin: 0 0 1mm; }
+  p { margin: 0 0 2.5mm; }
+  .lead { font-size: 10.6pt; color: var(--muted); max-width: 150mm; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 4mm; padding: 4mm 5mm; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4mm; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+  table { width: 100%; border-collapse: separate; border-spacing: 0; background: #fff; border: 1px solid var(--line); border-radius: 3mm; overflow: hidden; font-size: 8.5pt; line-height: 1.38; }
+  th { background: var(--navy); color: #fff; text-align: left; padding: 1.8mm 2.6mm; font-weight: 700; font-size: 8.6pt; }
+  td { padding: 1.6mm 2.6mm; border-top: 1px solid var(--line); vertical-align: top; }
+  tr:nth-child(even) td { background: #fbfaf7; }
+  td b { color: var(--navy); }
+  .tag { display: inline-block; font-size: 7.6pt; font-weight: 800; padding: .6mm 2.2mm; border-radius: 99px; text-transform: uppercase; letter-spacing: .04em; }
+  .t-done { background: #e3f4ea; color: var(--green); } .t-next { background: #fff3d6; color: #a06a00; } .t-later { background: var(--skysoft); color: #1479a8; } .t-lock { background: #fde8e8; color: var(--red); }
+  .note { background: #fff7d6; border: 1px solid #f1e2a4; border-radius: 3mm; padding: 3mm 4mm; font-size: 9.2pt; }
+  .navy-box { background: var(--navy); color: #fff; border-radius: 4mm; padding: 5mm 6mm; }
+  .navy-box h3, .navy-box b { color: #fff; }
+  ul.clean { margin: 0; padding-left: 4.5mm; } ul.clean li { margin: 0 0 1.2mm; }
+
+  /* flow diagrams */
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 2mm 0 1mm; flex-wrap: nowrap; }
+  .flow .s { flex: 1; background: #fff; border: 1px solid var(--line); border-radius: 3mm; padding: 2.4mm 2.6mm; font-size: 8.3pt; line-height: 1.35; }
+  .flow .s b { display: block; font-size: 8.6pt; margin-bottom: .6mm; }
+  .flow .a { flex: 0 0 5mm; display: grid; place-items: center; color: var(--saffron); font-weight: 900; font-size: 11pt; }
+  .flow.order { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.4mm; counter-reset: o; }
+  .flow.order .s { counter-increment: o; }
+  .flow.order .s b::before { content: counter(o) " · "; color: var(--saffron); }
+  .flow.order .s.nv b::before { color: var(--yellow); }
+  .flow .s.hl { border-color: var(--saffron); background: #fff3ea; }
+  .flow .s.nv { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .persona { display: grid; grid-template-columns: 28mm 1fr; gap: 3mm; align-items: start; margin-bottom: 4mm; }
+  .who { background: var(--navy); color: #fff; border-radius: 3mm; padding: 3mm; font-size: 8.5pt; }
+  .who b { display: block; font-family: var(--head); font-stretch: 70%; font-size: 12pt; text-transform: uppercase; line-height: 1.05; margin-bottom: 1mm; }
+  .who i { font-style: normal; font-size: 16pt; display: block; margin-bottom: 1mm; }
+  .persona .why { font-size: 8.6pt; color: var(--muted); margin: 0 0 1mm; }
+
+  /* architecture */
+  .arch { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4mm; align-items: stretch; }
+  .arch .col { display: grid; gap: 2.2mm; align-content: start; }
+  .arch .box { background: #fff; border: 1.5px solid var(--line); border-radius: 3mm; padding: 2.2mm 2.6mm; font-size: 8.2pt; line-height: 1.35; }
+  .arch .box b { display: block; font-size: 9.4pt; }
+  .arch .box.core { border-color: var(--navy); background: var(--navy); color: #fff; }
+  .arch .box.core b { color: #fff; }
+  .arch .box.priv { border-color: var(--red); background: #fff5f5; }
+  .arch .label { font-family: var(--head); font-stretch: 70%; font-weight: 800; text-transform: uppercase; font-size: 10pt; color: var(--muted); }
+  .arrowrow { text-align: center; color: var(--saffron); font-weight: 900; font-size: 14pt; line-height: 1; }
+
+  /* cover */
+  .cover { background: var(--navy); color: #fff; padding: 22mm 18mm; }
+  .cover::before { background: var(--navy2); right: -60mm; top: -30mm; width: 190mm; height: 190mm; }
+  .cover::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 5mm; background: linear-gradient(90deg, var(--saffron) 0 33.3%, #fff 33.3% 66.6%, var(--green) 66.6%); }
+  .cover .lock { display: flex; align-items: center; gap: 4mm; }
+  .cover .lock img { width: 22mm; height: 22mm; }
+  .cover .lock .bn { font-family: "Noto Sans Bengali"; font-weight: 700; font-size: 12pt; display: block; }
+  .cover .lock .hi { font-family: "Noto Sans Devanagari"; font-weight: 700; font-size: 11pt; display: block; }
+  .cover .lock .en { font-family: var(--head); font-stretch: 70%; font-weight: 800; font-size: 12pt; display: block; letter-spacing: .02em; }
+  .cover h1 { font-size: 64pt; margin-top: 40mm; color: #fff; }
+  .cover h1 em { font-style: normal; color: var(--saffron); }
+  .cover .sub { font-size: 14pt; color: rgba(255,255,255,.8); max-width: 140mm; margin-top: 6mm; }
+  .cover .script { font-family: "Noto Serif Display"; font-style: italic; font-weight: 600; font-size: 20pt; color: var(--yellow); margin-top: 14mm; }
+  .cover .meta { position: absolute; left: 18mm; right: 18mm; bottom: 18mm; display: flex; gap: 3mm; flex-wrap: wrap; font-size: 9pt; }
+  .cover .meta span { border: 1px solid rgba(255,255,255,.3); border-radius: 99px; padding: 1.4mm 4mm; }
+  .stat { background: #fff; border: 1px solid var(--line); border-radius: 3mm; padding: 3.5mm; }
+  .stat b { display: block; font-family: var(--head); font-stretch: 62.5%; font-weight: 800; font-size: 30pt; line-height: 1; color: var(--saffron); }
+  .stat span { font-size: 8.6pt; color: var(--muted); }
+  .toc { counter-reset: t; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5mm 8mm; font-size: 9.6pt; }
+  .toc div { display: flex; gap: 2mm; border-bottom: 1px dashed var(--line); padding: 1.2mm 0; }
+  .toc div b { color: var(--saffron); width: 6mm; }
+  .site { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+  .site .zone { border-radius: 3mm; padding: 3mm; font-size: 8.4pt; background: #fff; border: 1px solid var(--line); }
+  .site .zone h3 { font-family: var(--head); font-stretch: 70%; text-transform: uppercase; font-size: 11pt; margin-bottom: 1.5mm; }
+  .site .zone ul { margin: 0; padding-left: 4mm; } .site .zone li { margin-bottom: .6mm; }
+  .site .z1 { border-top: 4px solid var(--saffron); } .site .z2 { border-top: 4px solid var(--sky); } .site .z3 { border-top: 4px solid var(--green); } .site .z4 { border-top: 4px solid var(--navy); }
+  .num { display: inline-grid; place-items: center; width: 6mm; height: 6mm; border-radius: 50%; background: var(--sky); color: #fff; font-weight: 800; font-size: 8pt; margin-right: 1.5mm; }
+  .steps-v { display: grid; gap: 2mm; }
+  .steps-v > div { position: relative; display: block; background: #fff; border: 1px solid var(--line); border-radius: 3mm; padding: 2.1mm 3mm 2.1mm 11mm; font-size: 8.9pt; }
+  .steps-v > div > .num { position: absolute; left: 3mm; top: 2mm; }
+  .steps-v > div > div { display: inline; }
+</style>
+</head>
+<body>
+
+<!-- ============================== COVER ============================== -->
+<section class="page cover">
+  <div class="lock">
+    <img src="../public/brand/logo.svg" alt="">
+    <div>
+      <span class="bn">পশ্চিমবঙ্গ প্রদেশ কংগ্রেস</span>
+      <span class="hi">पश्चिम बंगाल प्रदेश कांग्रेस</span>
+      <span class="en">WEST BENGAL PRADESH CONGRESS</span>
+    </div>
+  </div>
+  <h1>Website<br><em>Blueprint</em></h1>
+  <p class="sub">How the website is built, who uses it and how, how content gets in and stays up to date, and how Instagram, YouTube, Facebook, X and WhatsApp connect to it.</p>
+  <p class="script">People · Progress · Possibilities</p>
+  <div class="meta">
+    <span>Version 1 · 23 November 2026</span>
+    <span>Front end built (placeholder content)</span>
+    <span>Backend: next phase</span>
+    <span>English · বাংলা · हिन्दी</span>
+  </div>
+</section>
+
+<!-- ============================== AT A GLANCE ============================== -->
+<section class="page">
+  <p class="eyebrow">01 · At a glance</p>
+  <h1>The website in one page</h1>
+  <div class="tri"><i></i><i></i><i></i></div>
+  <p class="lead">An informative, <b>present-first</b> website for West Bengal: what's happening now, how to take part, who leads, and news people can trust. Built for the phone first, in three languages.</p>
+
+  <div class="grid4" style="margin:5mm 0">
+    <div class="stat"><b>3</b><span>languages: English (default), Bangla, Hindi — switch any time</span></div>
+    <div class="stat"><b>9</b><span>access levels, from visitor to State President</span></div>
+    <div class="stat"><b>40+</b><span>screens designed: public site, accounts, member portal</span></div>
+    <div class="stat"><b>0</b><span>member names ever shown publicly</span></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>✅ Built today (front end)</h3>
+      <ul class="clean">
+        <li>Homepage: live ticker, hero, "I want to…", events near you, petitions, groups, leadership, newsroom</li>
+        <li>Detail pages for every event, petition, group, leader and news post</li>
+        <li>About, manifesto, contact, help, volunteer, press kit, privacy, terms</li>
+        <li>Sign-in (supporter · member · team), membership activation, My account</li>
+        <li>Member portal: dashboard, printables maker, proposals, ground reports, submissions</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>⏭ Still to build</h3>
+      <ul class="clean">
+        <li>Team console screens (Leadership desk, landing-page editor, translations)</li>
+        <li>Backend: database, real logins, roles, saving forms, emails</li>
+        <li>Auto-translation and the editor review workflow</li>
+        <li>Optional automatic pull of posts from YouTube / Instagram</li>
+        <li>Security pass, legal review, launch</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>What's inside this document</h2>
+  <div class="toc">
+    <div><b>02</b>How the website is built</div>
+    <div><b>06</b>Feeding the data — the console</div>
+    <div><b>03</b>Site map & the three languages</div>
+    <div><b>07</b>Translations & private data</div>
+    <div><b>04</b>Who can do what (access levels)</div>
+    <div><b>08</b>Instagram, YouTube & other channels</div>
+    <div><b>05</b>User maps — every person's journey</div>
+    <div><b>09</b>Security, roadmap & decisions needed</div>
+  </div>
+
+  <div class="note" style="margin-top:6mm">Everything shown on the site today — names, events, numbers, statements — is <b>sample content</b>. It will be replaced through the console once the backend is ready.</div>
+  <div class="foot"><span>WBPCC · Website blueprint</span><span>2</span></div>
+</section>
+
+<!-- ============================== HOW IT'S BUILT ============================== -->
+<section class="page">
+  <p class="eyebrow">02 · How it's built</p>
+  <h1>One website, one console</h1>
+  <div class="tri"><i></i><i></i><i></i></div>
+  <p class="lead">The public website and the team's editing console live in <b>one project</b>. Editors change content in the console; the website shows it straight away. Videos stay on YouTube / Instagram / Facebook — the site links and embeds them.</p>
+
+  <div class="arch" style="margin-top:5mm">
+    <div class="col">
+      <div class="label">Who comes in</div>
+      <div class="box"><b>📱 Citizens & supporters</b>Phones first, from reels, WhatsApp links or Google</div>
+      <div class="box"><b>🪪 Party members</b>Sign in with Member ID → member portal</div>
+      <div class="box"><b>🛡️ Team</b>Leadership & editors with role emails + 2-step code</div>
+      <div class="box"><b>📰 Media</b>Newsroom, statements, press kit</div>
+    </div>
+    <div class="col">
+      <div class="label">The project</div>
+      <div class="box core"><b>Website (Next.js)</b>All public pages, member portal, three languages. Hosted on Vercel.</div>
+      <div class="arrowrow">⇅</div>
+      <div class="box core"><b>Console at /admin (Payload CMS)</b>Forms to add & edit everything, roles, drafts, version history, EN/BN/HI tabs</div>
+      <div class="arrowrow">⇅</div>
+      <div class="box"><b>🗄️ Database (PostgreSQL)</b>Events, petitions, posts, groups, leaders, page text</div>
+      <div class="box priv"><b>🔒 Locked store</b>Member applications, formal-petition signers — Leadership only, every view logged</div>
+    </div>
+    <div class="col">
+      <div class="label">Services it talks to</div>
+      <div class="box"><b>🖼️ File storage</b>Photos, PDFs, logos (not videos)</div>
+      <div class="box"><b>✉️ Email (Resend)</b>Feedback to the right inbox, sign-in codes, activation links</div>
+      <div class="box"><b>🌐 Translation</b>Google Cloud Translation, run once when an article is published</div>
+      <div class="box"><b>▶️ Social platforms</b>YouTube, Instagram, Facebook, X embeds · WhatsApp sharing</div>
+      <div class="box"><b>🛡️ Cloudflare</b>Protection against attacks and spam bots</div>
+    </div>
+  </div>
+
+  <h2>The building blocks, in plain words</h2>
+  <table>
+    <tr><th style="width:26%">Piece</th><th>What it does</th><th style="width:30%">Why this choice</th></tr>
+    <tr><td><b>Next.js</b> (React)</td><td>Builds every page. Pages are pre-built so they load fast on slow mobile data and show proper previews when shared on WhatsApp.</td><td>Fast, good for Google search & link previews; the team already knows React.</td></tr>
+    <tr><td><b>Payload CMS</b> <span class="tag t-next">recommended</span></td><td>The editing console. Gives ready-made forms, image upload, lists, search, drafts, history and per-role permissions.</td><td>Runs inside the same project; roles like "edit only your own posts" are built in.</td></tr>
+    <tr><td><b>PostgreSQL</b></td><td>Stores all content and records.</td><td>Reliable, free tiers available (e.g. Neon / Supabase).</td></tr>
+    <tr><td><b>Vercel</b></td><td>Hosts the website.</td><td>Already used for your other live site.</td></tr>
+      </table>
+  <div class="note" style="margin-top:4mm">Alternative backend: <b>Firebase</b>. It works, but the console, history and role rules would all have to be hand-built — roughly double the backend work. Final choice is made when the backend phase starts.</div>
+  <div class="foot"><span>WBPCC · Website blueprint</span><span>3</span></div>
+</section>
+
+<!-- ============================== SITE MAP & LANGUAGES ============================== -->
+<section class="page">
+  <p class="eyebrow">03 · Site map & languages</p>
+  <h1>Four areas, three languages</h1>
+  <div class="tri"><i></i><i></i><i></i></div>
+
+  <div class="site">
+    <div class="zone z1"><h3>Public site</h3><ul>
+      <li>Home (present-first)</li><li>What's on + event pages</li><li>Petitions + sign / request</li><li>Groups + "ask for help"</li><li>Leadership & hierarchy</li><li>Newsroom: reels, videos, blogs, official statements</li><li>About, manifesto, history*</li><li>Contact, help, volunteer</li><li>Press kit, privacy, terms</li></ul></div>
+    <div class="zone z2"><h3>Accounts</h3><ul>
+      <li>Sign in — 3 doors</li><li>Supporter: Google / email code</li><li>Member: Member ID + password</li><li>Team: role email + 2-step code</li><li>Membership activation</li><li>My account (signatures, events, requests)</li></ul></div>
+    <div class="zone z3"><h3>Member portal</h3><ul>
+      <li>Dashboard & announcements</li><li>Printables maker (placard, poster, leaflet, social post → PDF)</li><li>Propose petition / campaign / event</li><li>Submit a ground report</li><li>My submissions & status</li><li>Profile</li></ul></div>
+    <div class="zone z4"><h3>Team console</h3><ul>
+      <li>Leadership desk: statements, approvals, member vault</li><li>Landing-page editor</li><li>Newsroom posts</li><li>Events, groups, leaders</li><li>Translation editor</li><li>Roles & audit log</li></ul></div>
+  </div>
+  <p style="font-size:8.6pt;color:var(--muted);margin-top:2mm">* History is linked from the homepage but arrives in a later phase, by design. Team console screens are the next front-end step.</p>
+
+  <h2>How the three languages work</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>For visitors</h3>
+      <ul class="clean">
+        <li>English opens by default; the <b>EN · বাং · हिं</b> switch is always in the top bar, on every page and phone size.</li>
+        <li>Each language has its own link — <b>/en/…</b>, <b>/bn/…</b>, <b>/hi/…</b> — so a Bangla link shared on WhatsApp opens in Bangla.</li>
+        <li>Menus and buttons are translated by hand once. Articles are translated automatically, then checked.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>For editors</h3>
+      <div class="flow">
+        <div class="s"><b>Write</b>in English</div><div class="a">→</div>
+        <div class="s"><b>Publish</b>auto-translate BN + HI</div><div class="a">→</div>
+        <div class="s hl"><b>🟡 Auto</b>banner shown</div><div class="a">→</div>
+        <div class="s"><b>🟢 Reviewed</b>by a language editor</div>
+      </div>
+      <p style="font-size:8.6pt;margin-top:2mm">If the English changes later, the translations are flagged <b>"outdated"</b> for re-checking. <b>Official statements & manifesto</b>: translations should be checked before they show (recommended).</p>
+    </div>
+  </div>
+
+  <h2>What visitors see on the homepage — in order</h2>
+  <div class="flow order">
+    <div class="s nv"><b>LIVE ticker</b>what's happening now</div>
+    <div class="s"><b>Hero</b>Join · events near me · sign</div>
+    <div class="s"><b>I want to…</b>6 one-tap shortcuts</div>
+    <div class="s"><b>What's on</b>event cards, map on demand</div>
+    <div class="s"><b>Petitions</b>sign or request</div>
+    <div class="s"><b>Groups</b>find your people</div>
+    <div class="s"><b>Leadership</b>who leads</div>
+    <div class="s nv"><b>Newsroom</b>verified & official</div>
+  </div>
+  <p style="font-size:8.6pt;color:var(--muted)">"Join us" is a button in the header on every page — membership steps live on the Join page, not on the homepage.</p>
+  <div class="foot"><span>WBPCC · Website blueprint</span><span>4</span></div>
+</section>
+
+<!-- ============================== ACCESS LEVELS ============================== -->
+<section class="page">
+  <p class="eyebrow">04 · Who can do what</p>
+  <h1>Nine access levels</h1>
+  <div class="tri"><i></i><i></i><i></i></div>
+  <p class="lead">Each person sees and changes only what their role allows. Team logins use <b>role emails</b> (president@, media@, feedback@ …) on the party's own domain, so when an office-holder changes, the account and its history stay with the office.</p>
+  <table>
+    <tr><th style="width:4%">#</th><th style="width:20%">Role</th><th style="width:22%">How they sign in</th><th>What they can do</th></tr>
+    <tr><td>1</td><td><b>Visitor</b></td><td>No login</td><td>Read everything public; send feedback; ask a group for help</td></tr>
+    <tr><td>2</td><td><b>Supporter</b></td><td>Google or email code</td><td>Sign petitions, request a petition, RSVP to events, track their own requests</td></tr>
+    <tr><td>3</td><td><b>Member</b> <span class="tag t-lock">anonymous</span></td><td>Member ID + password (invite only)</td><td>Member portal: printables, propose petitions/campaigns/events (reviewed), submit ground reports (verified)</td></tr>
+    <tr><td>4</td><td><b>Content Editor</b></td><td>Team login</td><td>Create stories, blogs, reels, explainers — <b>edit or delete only their own</b>. No landing page, no statements</td></tr>
+    <tr><td>5</td><td><b>Language Editor</b></td><td>Team login</td><td>Fix Bangla / Hindi on any page, Wikipedia-style; every edit logged and reversible</td></tr>
+    <tr><td>6</td><td><b>Admin Editor</b></td><td>Team login + 2-step</td><td><b>Landing page</b> (hero, ticker, featured, numbers), everyone's posts, events, groups, leaders; verify members' reports; manage editors</td></tr>
+    <tr><td>7</td><td><b>Leadership</b></td><td>Role email + 2-step</td><td><b>Only role that issues Official Statements.</b> Approve petitions & campaigns; open the member vault</td></tr>
+    <tr><td>8</td><td><b>State President</b></td><td>Role email + 2-step</td><td>Everything Leadership can + give or remove any role</td></tr>
+    <tr><td>9</td><td><b>Tech Admin</b></td><td>Separate account + 2-step</td><td>Settings, backups, fixes — <b>no</b> political powers, <b>no</b> member data</td></tr>
+  </table>
+
+  <h2>Rules that never bend</h2>
+  <div class="grid3">
+    <div class="card"><h3>🔒 Members stay anonymous</h3><p style="font-size:9pt">Publicly and to other members, a member is only "Member · district". Names, phones and addresses are seen by the State President and Leadership only.</p></div>
+    <div class="card"><h3>🟥 Statements = Leadership</h3><p style="font-size:9pt">Each official statement gets an ID (e.g. WBPCC/ST/2026/041) and a QR code, so a forwarded message can be checked.</p></div>
+    <div class="card"><h3>📜 Everything is logged</h3><p style="font-size:9pt">Every change by the team is recorded — who, what, when, before & after — and can be undone.</p></div>
+  </div>
+  <div class="foot"><span>WBPCC · Website blueprint</span><span>5</span></div>
+</section>
+
+<!-- ============================== USER MAPS 1 ============================== -->
+<section class="page">
+  <p class="eyebrow">05 · User maps (1/3)</p>
+  <h1>The public's journeys</h1>
+  <div class="tri"><i></i><i></i><i></i></div>
+
+  <div class="persona">
+    <div class="who"><i>🙋</i><b>Citizen</b>came from a reel or WhatsApp</div>
+    <div>
+      <p class="why">Wants to know what's happening, where, and how to take part — in under a minute.</p>
+      <div class="flow">
+        <div class="s"><b>Lands</b>homepage or a shared link</div><div class="a">→</div>
+        <div class="s"><b>Sees LIVE</b>ticker + hero + shortcuts</div><div class="a">→</div>
+        <div class="s"><b>Near me</b>picks district or 📍</div><div class="a">→</div>
+        <div class="s"><b>Event page</b>brief, map, directions</div><div class="a">→</div>
+        <div class="s hl"><b>Acts</b>I'm going · share on WhatsApp</div>
+      </div>
+      <div class="flow">
+        <div class="s"><b>Petitions</b>reads the ask</div><div class="a">→</div>
+        <div class="s"><b>Signs</b>name + code (address if formal)</div><div class="a">→</div>
+        <div class="s"><b>Groups</b>finds a wing</div><div class="a">→</div>
+        <div class="s"><b>Asks for help</b>form goes to that group</div><div class="a">→</div>
+        <div class="s hl"><b>✋ Join us</b>always in header</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="persona">
+    <div class="who"><i>✍️</i><b>Supporter</b>signed in</div>
+    <div>
+      <p class="why">Keeps track of what they've signed, attended and asked for.</p>
+      <div class="flow">
+        <div class="s"><b>Sign in</b>Google or email code</div><div class="a">→</div>
+        <div class="s"><b>My account</b>signatures · events · requests</div><div class="a">→</div>
+        <div class="s"><b>Request a petition</b>goes for review</div><div class="a">→</div>
+        <div class="s"><b>Updates</b>WhatsApp / email (opt-in)</div><div class="a">→</div>
+        <div class="s hl"><b>Apply</b>to become a member</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="persona">
+    <div class="who"><i>📰</i><b>Media</b>journalist</div>
+    <div>
+      <p class="why">Needs authentic, citable material fast.</p>
+      <div class="flow">
+        <div class="s"><b>Newsroom</b>statements · reports · stories</div><div class="a">→</div>
+        <div class="s"><b>Statement</b>ID, date, signed by, PDF + QR</div><div class="a">→</div>
+        <div class="s"><b>Verify</b>paste an ID on the Newsroom page</div><div class="a">→</div>
+        <div class="s hl"><b>Press kit</b>logo, colours, photos, contact</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="persona">
+    <div class="who"><i>🆘</i><b>Someone in need</b></div>
+    <div>
+      <p class="why">Doesn't need to be a member to get help.</p>
+      <div class="flow">
+        <div class="s"><b>Get help</b>112 shown first for emergencies</div><div class="a">→</div>
+        <div class="s"><b>Picks a problem</b>ration, health, jobs, safety…</div><div class="a">→</div>
+        <div class="s"><b>Routed</b>to the right group / help desk</div><div class="a">→</div>
+        <div class="s hl"><b>Ticket number</b>tracks it in My account</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>WBPCC · Website blueprint</span><span>6</span></div>
+</section>
+
+<!-- ============================== USER MAPS 2 ============================== -->
+<section class="page">
+  <p class="eyebrow">05 · User maps (2/3)</p>
+  <h1>Becoming & being a member</h1>
+  <div class="tri"><i></i><i></i><i></i></div>
+
+  <div class="persona">
+    <div class="who"><i>🪪</i><b>Applicant → Member</b></div>
+    <div>
+      <p class="why">Joins without their details ever becoming public.</p>
+      <div class="flow">
+        <div class="s"><b>1 · Apply</b>2-minute form on /join</div><div class="a">→</div>
+        <div class="s nv"><b>2 · Locked store</b>Leadership-only, logged</div><div class="a">→</div>
+        <div class="s"><b>3 · Verify</b>call or district office visit</div><div class="a">→</div>
+        <div class="s"><b>4 · Approve</b>Member ID issued</div><div class="a">→</div>
+        <div class="s"><b>5 · Activate</b>invite code → set login</div><div class="a">→</div>
+        <div class="s hl"><b>6 · Portal</b>new member, 60 days</div>
+      </div>
+      <p style="font-size:8.6pt;margin-top:2mm">Member ID format: <b>WB-HWH-YTH-0421</b> (state · district · group · number). No ID scans or Aadhaar are stored — only "verified by Leadership on date".</p>
+    </div>
+  </div>
+
+  <div class="persona">
+    <div class="who"><i>🖨️</i><b>Member</b>in the portal</div>
+    <div>
+      <p class="why">Gets tools to act on the ground — every public action goes through review.</p>
+      <div class="flow">
+        <div class="s"><b>Dashboard</b>district & group announcements</div><div class="a">→</div>
+        <div class="s"><b>Printables</b>pick template → type → PDF</div><div class="a">→</div>
+        <div class="s"><b>Propose</b>petition / campaign / event</div><div class="a">→</div>
+        <div class="s"><b>Ground report</b>story + video link + photos</div><div class="a">→</div>
+        <div class="s hl"><b>My submissions</b>review → approved / changes</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>What happens after a member sends something</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Proposal (petition / campaign / event)</h3>
+      <div class="steps-v">
+        <div><span class="num">1</span>Member sends → status <b>Under review</b></div>
+        <div><span class="num">2</span>Leadership approves, asks for changes (with a note) or declines</div>
+        <div><span class="num">3</span>Approved → Admin Editor publishes it on the site</div>
+        <div><span class="num">4</span>Shown as started by "Party member · district"</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Ground report</h3>
+      <div class="steps-v">
+        <div><span class="num">1</span>Member sends with proof → <b>Under verification</b></div>
+        <div><span class="num">2</span>Location data stripped from photos automatically</div>
+        <div><span class="num">3</span>Admin Editor checks the facts and proof</div>
+        <div><span class="num">4</span>Published in the Newsroom with a <b>✓ Verified</b> badge</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>The printables maker</h2>
+  <p>Templates are fixed and approved by the party — members only type the words. The logo, colours and layout can't be changed, so every placard looks official. Output is an A4 / A3 PDF in English, Bangla or Hindi, made right in the browser (no upload, works on weak internet).</p>
+  <div class="foot"><span>WBPCC · Website blueprint</span><span>7</span></div>
+</section>
+
+<!-- ============================== USER MAPS 3 ============================== -->
+<section class="page">
+  <p class="eyebrow">05 · User maps (3/3)</p>
+  <h1>The team's journeys</h1>
+  <div class="tri"><i></i><i></i><i></i></div>
+
+  <div class="persona">
+    <div class="who"><i>📝</i><b>Content Editor</b></div>
+    <div>
+      <div class="flow">
+        <div class="s"><b>Sign in</b>team door + 2-step</div><div class="a">→</div>
+        <div class="s"><b>My posts</b>only their own</div><div class="a">→</div>
+        <div class="s"><b>New post</b>reel / video / blog, paste link</div><div class="a">→</div>
+        <div class="s"><b>Write text</b>English → auto BN/HI</div><div class="a">→</div>
+        <div class="s hl"><b>Publish</b>homepage rail + Newsroom</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="persona">
+    <div class="who"><i>🏗️</i><b>Admin Editor</b></div>
+    <div>
+      <div class="flow">
+        <div class="s"><b>Landing page</b>hero, ticker, featured, numbers</div><div class="a">→</div>
+        <div class="s"><b>Content</b>events, groups, leaders, all posts</div><div class="a">→</div>
+        <div class="s"><b>Queues</b>verify member reports</div><div class="a">→</div>
+        <div class="s hl"><b>Team</b>add / remove editors</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="persona">
+    <div class="who"><i>🔤</i><b>Language Editor</b></div>
+    <div>
+      <div class="flow">
+        <div class="s"><b>Opens any page</b>sees ✏️ Improve translation</div><div class="a">→</div>
+        <div class="s"><b>Side by side</b>English (locked) · Bangla/Hindi</div><div class="a">→</div>
+        <div class="s"><b>Fix + note</b>goes live instantly</div><div class="a">→</div>
+        <div class="s hl"><b>History</b>before/after, one-click undo</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="persona">
+    <div class="who"><i>🟥</i><b>Leadership & President</b></div>
+    <div>
+      <div class="flow">
+        <div class="s nv"><b>Leadership desk</b>role email + 2-step</div><div class="a">→</div>
+        <div class="s"><b>Issue statement</b>gets ID + QR PDF</div><div class="a">→</div>
+        <div class="s"><b>Approvals</b>petitions, campaigns, requests</div><div class="a">→</div>
+        <div class="s"><b>Member vault</b>verify & approve applicants</div><div class="a">→</div>
+        <div class="s hl"><b>Roles</b>(President) who has access</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="navy-box" style="margin-top:4mm">
+    <h3>Editor split — exactly as requested</h3>
+    <p style="margin:0;font-size:9.4pt"><b>Common (Content) Editors</b> can post stories, blogs and reels and edit <b>only the ones they posted</b>. <b>Admin Editors</b> (high level) can change the <b>landing page</b> and edit everyone's content. Only <b>Leadership</b> issues official statements.</p>
+  </div>
+  <div class="foot"><span>WBPCC · Website blueprint</span><span>8</span></div>
+</section>
+
+<!-- ============================== FEEDING THE DATA ============================== -->
+<section class="page">
+  <p class="eyebrow">06 · Feeding the data</p>
+  <h1>Everything is editable</h1>
+  <div class="tri"><i></i><i></i><i></i></div>
+  <p class="lead">Every piece of placeholder text on the site today becomes a record in the console. No developer is needed to change a name, add an event or post a reel.</p>
+
+  <table>
+    <tr><th style="width:24%">Content</th><th style="width:24%">Who edits it</th><th>Example</th></tr>
+    <tr><td><b>Landing page</b> — hero, ticker, featured campaign, numbers, shortcuts</td><td>Admin Editor</td><td>New headline and photo for a new campaign; add a line to the LIVE ticker</td></tr>
+    <tr><td><b>Leaders & hierarchy</b></td><td>Admin Editor (President approves)</td><td>New State President: edit name + photo; the old card moves to "former office-bearers"</td></tr>
+    <tr><td><b>Groups / wings</b></td><td>Admin Editor</td><td>Add a wing; change its motto, contact email, this month's update</td></tr>
+    <tr><td><b>Events</b></td><td>Admin Editor (later: group coordinators)</td><td>Rally with date, time, place and a map pin</td></tr>
+    <tr><td><b>Petitions</b></td><td>Leadership / Admin Editor publish; members propose</td><td>Publish an approved member petition; close one and post the outcome</td></tr>
+    <tr><td><b>Newsroom posts</b></td><td>Content Editors (own) · Admin Editor (all)</td><td>Paste an Instagram reel link + write the story</td></tr>
+    <tr><td><b>Official statements</b></td><td>Leadership only</td><td>Issue a statement → ID + QR PDF created</td></tr>
+    <tr><td><b>About, manifesto, help routing, inboxes</b></td><td>Admin Editor</td><td>Update a manifesto promise; change which email gets complaints</td></tr>
+    <tr><td><b>Translations</b></td><td>Language Editors</td><td>Correct a Bangla word on any page</td></tr>
+  </table>
+
+  <h2>Example: a new State President</h2>
+  <div class="flow">
+    <div class="s"><b>1</b>Admin Editor opens Leaders → State President</div><div class="a">→</div>
+    <div class="s"><b>2</b>Changes name, photo, bio (EN / BN / HI tabs)</div><div class="a">→</div>
+    <div class="s"><b>3</b>Previous holder → "Former"</div><div class="a">→</div>
+    <div class="s"><b>4</b>President approves → Publish</div><div class="a">→</div>
+    <div class="s hl"><b>5</b>Homepage, Leadership, About update at once</div>
+  </div>
+  <p style="font-size:8.8pt">The <b>president@</b> mailbox password and 2-step code are reset by the Tech Admin and handed over — the account, its statements and history stay with the office.</p>
+
+  <h2>Safety nets for editors</h2>
+  <div class="grid3">
+    <div class="card"><h3>📝 Drafts</h3><p style="font-size:9pt">Save without publishing; preview exactly how it will look.</p></div>
+    <div class="card"><h3>🕘 Versions</h3><p style="font-size:9pt">Every save is kept. Restore any earlier version in one click.</p></div>
+    <div class="card"><h3>📜 Audit log</h3><p style="font-size:9pt">Who changed what and when — visible to Leadership.</p></div>
+  </div>
+  <div class="foot"><span>WBPCC · Website blueprint</span><span>9</span></div>
+</section>
+
+<!-- ============================== TRANSLATIONS & PRIVATE DATA ============================== -->
+<section class="page">
+  <p class="eyebrow">07 · Translations & private data</p>
+  <h1>Two kinds of data, kept apart</h1>
+  <div class="tri"><i></i><i></i><i></i></div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>🌍 Public content</h3>
+      <p style="font-size:9pt">Events, petitions (text & counts), posts, groups, leaders, page text. Anyone can read it. Stored with English, Bangla and Hindi side by side.</p>
+    </div>
+    <div class="card" style="border-color:#f5b5b5;background:#fff8f8">
+      <h3>🔒 Private records</h3>
+      <p style="font-size:9pt">Membership applications, members' contact details, formal-petition signer names & addresses, feedback and help tickets. Kept in a separate locked store, readable only by the roles that need it; every opening is logged.</p>
+    </div>
+  </div>
+
+  <h2>Who sees private records</h2>
+  <table>
+    <tr><th>Record</th><th>Visible to</th><th>Shown publicly</th></tr>
+    <tr><td><b>Membership application / member details</b></td><td>State President, Leadership</td><td>Nothing — only "Member · district" on their reports</td></tr>
+    <tr><td><b>Online petition signature</b></td><td>Petition owner, Leadership</td><td>Count; first name + district only if the signer ticks the box</td></tr>
+    <tr><td><b>Formal petition (for government)</b></td><td>Leadership; the authority it's submitted to</td><td>Count only</td></tr>
+    <tr><td><b>Feedback / complaint / help ticket</b></td><td>The inbox it was routed to (e.g. complaints@)</td><td>Nothing</td></tr>
+    <tr><td><b>"Near me" location</b></td><td>Nobody — used only inside the visitor's own browser</td><td>Nothing</td></tr>
+  </table>
+
+  <h2>Translation workflow</h2>
+  <div class="flow">
+    <div class="s"><b>Menus & buttons</b>translated by hand, once</div><div class="a">→</div>
+    <div class="s"><b>Articles</b>machine-translated at publish</div><div class="a">→</div>
+    <div class="s hl"><b>🟡 Auto-translated</b>banner visible</div><div class="a">→</div>
+    <div class="s"><b>Language editor</b>fixes, logged</div><div class="a">→</div>
+    <div class="s"><b>🟢 Reviewed</b>badge</div>
+  </div>
+  <p style="font-size:8.8pt">Legal pages (privacy, terms) are translated by a person after a lawyer approves them — never by machine.</p>
+
+  <h2>Legal basis</h2>
+  <p>The site is designed around India's <b>Digital Personal Data Protection Act, 2023</b>: a clear privacy notice, consent before collecting, data used only for the stated purpose, and the right to see, correct or erase it. The privacy policy and terms on the site are drafts for a lawyer to finalise. Online signatures are a record of support, <b>not</b> legal digital signatures under the IT Act.</p>
+  <div class="foot"><span>WBPCC · Website blueprint</span><span>10</span></div>
+</section>
+
+<!-- ============================== SOCIAL CHANNELS 1 ============================== -->
+<section class="page">
+  <p class="eyebrow">08 · Instagram, YouTube & other channels (1/2)</p>
+  <h1>Post on social, show on the site</h1>
+  <div class="tri"><i></i><i></i><i></i></div>
+  <p class="lead">Videos and reels are <b>not uploaded to the website</b>. The team keeps posting on Instagram, YouTube, Facebook and X as usual; the website <b>links and embeds</b> those posts and adds the written story. The website is the trusted home; social is where people discover it.</p>
+
+  <div class="arch" style="grid-template-columns:1fr 1.15fr 1fr;margin-top:4mm">
+    <div class="col">
+      <div class="label">Coming in</div>
+      <div class="box"><b>▶️ YouTube</b>videos & Shorts play inside the post</div>
+      <div class="box"><b>📸 Instagram</b>reels & posts shown as reel cards</div>
+      <div class="box"><b>📘 Facebook</b>posts & videos embedded</div>
+      <div class="box"><b>𝕏 X</b>posts embedded when useful</div>
+    </div>
+    <div class="col">
+      <div class="label">The website</div>
+      <div class="box core"><b>Newsroom post</b>video link + headline + written story + type (statement / verified report / story) + district</div>
+      <div class="arrowrow">↓</div>
+      <div class="box"><b>Shows up in</b>homepage "Latest from the ground" rail, Newsroom page, group pages, the leader's profile</div>
+    </div>
+    <div class="col">
+      <div class="label">Going out</div>
+      <div class="box"><b>💬 WhatsApp</b>"Share on WhatsApp" on every page; link to the party's WhatsApp Channel</div>
+      <div class="box"><b>🔗 Link previews</b>shared links show headline + image on WhatsApp, Facebook, X</div>
+      <div class="box"><b>📣 Ticker & home</b>important posts can be featured on the landing page</div>
+    </div>
+  </div>
+
+  <h2>Platform by platform</h2>
+  <table>
+    <tr><th style="width:13%">Platform</th><th style="width:32%">Phase 1 — paste the link</th><th style="width:32%">Later — optional automation</th><th>What we need</th></tr>
+    <tr><td><b>YouTube</b></td><td>Paste a video or Shorts link → plays inside the post (privacy-friendly player).</td><td>New uploads appear in the console as <b>drafts</b> automatically (YouTube Data API).</td><td>Channel ID + a free API key</td></tr>
+    <tr><td><b>Instagram</b></td><td>Paste a reel / post link → reel card with "Watch on Instagram", or Instagram's official embed.</td><td>Latest posts pulled in as drafts (Instagram API via Meta).</td><td>Instagram <b>Professional</b> account linked to the Facebook Page + a Meta developer app</td></tr>
+    <tr><td><b>Facebook</b></td><td>Paste a post / video link → official embed. Optional Page feed box.</td><td>Page posts pulled in as drafts (Meta Graph API).</td><td>Admin access to the Facebook Page; the same Meta app</td></tr>
+    <tr><td><b>X</b></td><td>Paste a post link → official embedded post.</td><td>Not recommended — X's reading API is paid.</td><td>Nothing for embeds</td></tr>
+    <tr><td><b>WhatsApp</b></td><td>Share buttons everywhere; WhatsApp Channel link in the footer.</td><td>Alerts to opted-in supporters via WhatsApp Business Platform (paid per message).</td><td>A WhatsApp Channel; a Business account only if broadcasting</td></tr>
+  </table>
+  <div class="foot"><span>WBPCC · Website blueprint</span><span>11</span></div>
+</section>
+
+<!-- ============================== SOCIAL CHANNELS 2 ============================== -->
+<section class="page">
+  <p class="eyebrow">08 · Instagram, YouTube & other channels (2/2)</p>
+  <h1>Posting a reel — step by step</h1>
+  <div class="tri"><i></i><i></i><i></i></div>
+
+  <div class="steps-v" style="margin-top:2mm">
+    <div><span class="num">1</span><div><b>Post on Instagram as usual</b> from the party's account (or YouTube / Facebook).</div></div>
+    <div><span class="num">2</span><div><b>Copy the post link</b> (Share → Copy link).</div></div>
+    <div><span class="num">3</span><div><b>Console → Newsroom → New post.</b> Choose <i>Reel</i>, <i>Video</i> or <i>Blog</i> and paste the link. The thumbnail and platform are picked up from the link.</div></div>
+    <div><span class="num">4</span><div><b>Write the headline and the story</b> in English. Pick the type — <i>story</i>, <i>verified ground report</i> or (Leadership only) <i>official statement</i> — and the district.</div></div>
+    <div><span class="num">5</span><div><b>Auto-translate</b> to Bangla and Hindi with one button; a Language Editor can polish it later.</div></div>
+    <div><span class="num">6</span><div><b>Publish.</b> It appears on the homepage rail and the Newsroom; sharing the page on WhatsApp shows a proper preview.</div></div>
+  </div>
+
+  <h2>Golden rule for automation</h2>
+  <div class="navy-box">
+    <p style="margin:0;font-size:10pt">Anything pulled in automatically from YouTube or Instagram lands as a <b>draft</b>, never straight on the site. An editor adds the written story, picks the type and district, and publishes. This keeps the Newsroom <b>"Verified. Official. Real."</b> — a hacked or mistaken social post can't appear on the website by itself.</p>
+  </div>
+
+  <h2>Accounts to prepare</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Needed for Phase 1</h3>
+      <ul class="clean">
+        <li>The party's official handles (e.g. <b>@INCWestBengal</b>) on each platform</li>
+        <li>A <b>WhatsApp Channel</b> link</li>
+        <li>The website domain (wbpcc.org or incwb.org — to confirm)</li>
+        <li>Role email accounts on that domain (president@, media@, feedback@ …)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Only if we automate later</h3>
+      <ul class="clean">
+        <li>Instagram switched to a <b>Professional</b> account, linked to the Facebook Page</li>
+        <li>A <b>Meta developer app</b> (free) owned by a party account</li>
+        <li>A <b>YouTube API key</b> (free quota)</li>
+        <li>WhatsApp Business Platform — paid, a later decision</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note" style="margin-top:4mm">Platform rules change often. Exact API steps, permissions and costs will be re-checked when we build the backend.</div>
+  <div class="foot"><span>WBPCC · Website blueprint</span><span>12</span></div>
+</section>
+
+<!-- ============================== SECURITY, ROADMAP, DECISIONS ============================== -->
+<section class="page">
+  <p class="eyebrow">09 · Security, roadmap & decisions</p>
+  <h1>What's next</h1>
+  <div class="tri"><i></i><i></i><i></i></div>
+
+  <h2>Security built in</h2>
+  <div class="grid3">
+    <div class="card"><h3>🛡️ Front door</h3><p style="font-size:9pt">Cloudflare in front of the site; spam protection on every form; limits on repeated attempts.</p></div>
+    <div class="card"><h3>🔑 Logins</h3><p style="font-size:9pt">2-step codes for every team account; invite-only membership; no passwords stored by us for Google sign-ins.</p></div>
+    <div class="card"><h3>💾 Backups</h3><p style="font-size:9pt">Daily database backups; the audit log can't be edited by editors.</p></div>
+  </div>
+
+  <h2>Build roadmap — front end first, then backend</h2>
+  <table>
+    <tr><th style="width:8%">Step</th><th>What</th><th style="width:14%">Status</th></tr>
+    <tr><td>F1</td><td>Homepage, events, petitions, groups, leadership, newsroom (+ detail pages), Join, 3 languages, animations</td><td><span class="tag t-done">Done</span></td></tr>
+    <tr><td>F2</td><td>Sign-in (3 doors), activation, My account</td><td><span class="tag t-done">Done</span></td></tr>
+    <tr><td>F3</td><td>Member portal: dashboard, printables, propose, ground report, submissions, profile</td><td><span class="tag t-done">Done</span></td></tr>
+    <tr><td>F4</td><td>About, manifesto, contact, help, volunteer, petition request, press kit, privacy, terms</td><td><span class="tag t-done">Done</span></td></tr>
+    <tr><td>F5</td><td>Team console: Leadership desk, landing-page editor, translation editor</td><td><span class="tag t-next">Next</span></td></tr>
+    <tr><td>F6</td><td>Phone polish, accessibility, speed, share previews, 404 page</td><td><span class="tag t-later">Planned</span></td></tr>
+    <tr><td>B1–B2</td><td>Console + database; team logins, roles, audit log; landing page & content editing live</td><td><span class="tag t-later">Planned</span></td></tr>
+    <tr><td>B3–B4</td><td>Auto-translation; supporter sign-in, petition signing with codes, RSVPs, feedback emails</td><td><span class="tag t-later">Planned</span></td></tr>
+    <tr><td>B5–B6</td><td>Membership vault → verification → Member ID → portal; statement IDs + QR PDFs</td><td><span class="tag t-later">Planned</span></td></tr>
+    <tr><td>B7</td><td>Security pass, legal review, launch</td><td><span class="tag t-later">Planned</span></td></tr>
+  </table>
+
+  <h2>Decisions needed from the party</h2>
+  <div class="grid2">
+    <div class="steps-v">
+      <div><span class="num">1</span>Website domain: <b>wbpcc.org</b> or <b>incwb.org</b>?</div>
+      <div><span class="num">2</span>Email provider for role emails (Google Workspace / Zoho)</div>
+      <div><span class="num">3</span>Member login: email (free) or phone code (costs per SMS)?</div>
+      <div><span class="num">4</span>Statement translations: wait for review, or show auto + banner?</div>
+    </div>
+    <div class="steps-v">
+      <div><span class="num">5</span>Official logo files, exact colours, real group names</div>
+      <div><span class="num">6</span>Real leaders, photos, events, manifesto text</div>
+      <div><span class="num">7</span>Who are the first Admin / Content / Language Editors?</div>
+      <div><span class="num">8</span>Automate Instagram / YouTube pull now or later?</div>
+    </div>
+  </div>
+  <div class="foot"><span>WBPCC · Website blueprint</span><span>13</span></div>
+</section>
+
+</body>
+</html>
